@@ -19,7 +19,6 @@ module Pier.Build.Stackage
 
 import Control.Exception (throw)
 import Data.Binary.Orphans ()
-import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Yaml
 import Development.Shake
@@ -31,7 +30,7 @@ import Distribution.System (buildPlatform, Platform(..), Arch(..), OS(..))
 import Distribution.Version
 import GHC.Generics
 
-import qualified Data.HashMap.Strict as HM
+import qualified Data.Map.Strict as Map
 import qualified Data.List as List
 import qualified Data.Set as Set
 import qualified Data.Text as T
@@ -41,6 +40,7 @@ import Pier.Core.Artifact
 import Pier.Core.Download
 import Pier.Core.Persistent
 import Pier.Orphans ()
+import Data.Aeson.Key (fromText)
 
 newtype PlanName = PlanName { renderPlanName :: String }
     deriving (Show,Typeable,Eq,Hashable,Binary,NFData,Generic)
@@ -49,8 +49,8 @@ instance FromJSON PlanName where
     parseJSON = fmap PlanName . parseJSON
 
 data BuildPlan = BuildPlan
-    { corePackageVersions :: HM.HashMap PackageName Version
-    , planPackages :: HM.HashMap PackageName PlanPackage
+    { corePackageVersions :: Map.Map PackageName Version
+    , planPackages :: Map.Map PackageName PlanPackage
     , ghcVersion :: Version
     } deriving (Show,Typeable,Eq,Hashable,Binary,NFData,Generic)
 
@@ -59,7 +59,7 @@ data PlanPackage = PlanPackage
     , planPackageFlags :: Flags
     } deriving (Show,Typeable,Eq,Hashable,Binary,NFData,Generic)
 
-type Flags = HM.HashMap FlagName Bool
+type Flags = Map.Map FlagName Bool
 
 instance FromJSON BuildPlan where
     parseJSON = withObject "Plan" $ \o -> do
@@ -142,7 +142,7 @@ packageConfD = "package.conf.d"
 askInstalledGhc :: BuildPlan -> GhcDistro -> Action InstalledGhc
 askInstalledGhc plan distro
     = askPersistent $ InstalledGhcQ distro (ghcVersion plan)
-                    $ HM.keys $ corePackageVersions plan
+                    $ Map.keys $ corePackageVersions plan
 
 -- | Convert @${pkgroot}@ prefixes, for utilities like hsc2hs that don't
 -- see packages directly
@@ -218,12 +218,12 @@ instance FromJSON DownloadInfo where
 
 -- TODO: multiple OSes, configure-env
 
-newtype StackSetup = StackSetup { ghcVersions :: HM.HashMap Version DownloadInfo }
+newtype StackSetup = StackSetup { ghcVersions :: Map.Map Version DownloadInfo }
 
 instance FromJSON StackSetup where
     parseJSON = withObject "StackSetup" $ \o -> do
         ghc <- o .: "ghc"
-        StackSetup <$> (ghc .: platformKey)
+        StackSetup <$> (ghc .: fromText platformKey)
 
 -- TODO: make this more configurable (eventually, using
 -- `LocalBuildInfo.hostPlatform` to help support cross-compilation)
@@ -257,7 +257,7 @@ downloadAndInstallGHC version = do
     download <- case decodeEither' cs of
         Left err -> throw err
         Right x
-            | Just download <- HM.lookup version (ghcVersions x)
+            | Just download <- Map.lookup version (ghcVersions x)
                 -> pure download
             | otherwise -> fail $ "Couldn't find GHC version" ++ Cabal.display version
     -- TODO: reenable this once we've fixed the issue with nondetermistic

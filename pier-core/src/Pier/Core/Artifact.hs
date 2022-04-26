@@ -37,7 +37,6 @@ produce the files that we expect.
 
 -}
 {-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE TypeOperators #-}
 module Pier.Core.Artifact
     ( -- * Rules
       artifactRules

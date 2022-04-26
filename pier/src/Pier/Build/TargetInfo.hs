@@ -10,7 +10,7 @@ import Data.List (nub)
 import Data.Maybe (catMaybes, fromMaybe)
 import Development.Shake
 import Development.Shake.FilePath ((</>))
-import Distribution.Compiler (CompilerFlavor(GHC))
+import Distribution.Compiler (CompilerFlavor(GHC), perCompilerFlavorToList)
 import Distribution.ModuleName
 import Distribution.Package (packageName)
 import Distribution.PackageDescription
@@ -57,7 +57,7 @@ getTargetInfo confd bi result deps ghc = do
     let allOptions = map ("-X" ++)
                     (display (fromMaybe Haskell98 $ defaultLanguage bi)
                         : map display (defaultExtensions bi ++ oldExtensions bi))
-                    ++ concat [opts | (GHC,opts) <- options bi]
+                    ++ concat [opts | (GHC,opts) <- perCompilerFlavorToList (options bi)]
     let srcDirs = sourceDirArtifacts packageSourceDir bi
     let fixDashes = map $ \c -> if c == '-' then '_' else c
     let pathsMod = fromString $ "Paths_" ++ fixDashes (display $ packageName confd)
@@ -87,7 +87,7 @@ getTargetInfo confd bi result deps ghc = do
         , targetSourceDirs = srcDirs
         , targetOtherModules = otherModules bi
         }
-                            
+
 
 collectCIncludes :: PackageDescription -> BuildInfo -> (FilePath -> Artifact) -> Action [Artifact]
 collectCIncludes desc bi pkgDir = do

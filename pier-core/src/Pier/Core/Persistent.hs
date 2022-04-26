@@ -33,21 +33,22 @@ addPersistent
     :: (RuleResult q ~ a, ShakeValue q, ShakeValue a)
     => (q -> Action a)
     -> Rules ()
-addPersistent act = addBuiltinRule noLint $ \(Persistent q) old depsChanged
-                    -> case old of
-    Just old' | not depsChanged
-              , Just val <- decode' old'
-                    -> return $ RunResult ChangedNothing old' val
-    _ -> do
-            rerunIfCleaned
-            new <- PersistentA <$> act q
-            return $ RunResult
-                    (if (old >>= decode') == Just new
-                        then ChangedRecomputeSame
-                        else ChangedRecomputeDiff)
-                    (encode' new)
-                    new
+addPersistent act = addBuiltinRule noLint noIdentity run
     where
+        run (Persistent q) old mode = case old of
+          Just old' | mode == RunDependenciesSame
+                    , Just val <- decode' old'
+                          -> return $ RunResult ChangedNothing old' val
+          _ -> do
+                  rerunIfCleaned
+                  new <- PersistentA <$> act q
+                  return $ RunResult
+                          (if (old >>= decode') == Just new
+                              then ChangedRecomputeSame
+                              else ChangedRecomputeDiff)
+                          (encode' new)
+                          new
+
         encode' :: Binary a => a -> BS.ByteString
         encode' = BS.concat . LBS.toChunks . encode
 
@@ -85,11 +86,13 @@ type instance RuleResult Cleaner = ()
 cleaning :: Bool -> Rules ()
 cleaning shouldClean = do
     action rerunIfCleaned
-    addBuiltinRule noLint $ \Cleaner _ _ ->
-        let change = if shouldClean
-                        then ChangedRecomputeDiff
-                        else ChangedNothing
-        in return $ RunResult change BS.empty ()
+    addBuiltinRule noLint noIdentity run
+    where
+        run Cleaner _ _ =
+            let change = if shouldClean
+                            then ChangedRecomputeDiff
+                            else ChangedNothing
+            in return $ RunResult change BS.empty ()
 
 rerunIfCleaned :: Action ()
 rerunIfCleaned = apply1 Cleaner

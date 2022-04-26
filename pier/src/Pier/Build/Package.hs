@@ -17,7 +17,8 @@ import Distribution.Text (display)
 import Distribution.Types.CondTree (CondBranch(..))
 import Distribution.Version (withinRange)
 
-import qualified Data.HashMap.Strict as HM
+import Data.Map (Map)
+import qualified Data.Map.Strict as Map
 
 import Pier.Build.Stackage
 import Pier.Core.Artifact
@@ -95,7 +96,7 @@ flattenToDefaultFlags
 flattenToDefaultFlags plan planFlags gdesc = let
     desc0 = packageDescription gdesc
     -- Bias towards plan flags (since they override the defaults)
-    flags = planFlags `HM.union` HM.fromList [(flagName f, flagDefault f)
+    flags = planFlags `Map.union` Map.fromList [(flagName f, flagDefault f)
                         | f <- genPackageFlags gdesc
                         ]
     in desc0
@@ -110,7 +111,7 @@ flattenToDefaultFlags plan planFlags gdesc = let
 resolve
     :: Semigroup a
     => BuildPlan
-    -> HM.HashMap FlagName Bool
+    -> Map FlagName Bool
     -> CondTree ConfVar [Dependency] a
     -> a
 resolve plan flags node
@@ -123,11 +124,11 @@ resolve plan flags node
                         then Just ifTrue
                         else ifFalse]]
 
-isTrue :: BuildPlan -> HM.HashMap FlagName Bool -> Condition ConfVar -> Bool
+isTrue :: BuildPlan -> Map FlagName Bool -> Condition ConfVar -> Bool
 isTrue plan flags = loop
   where
     loop (Var (Flag f))
-        | Just x <- HM.lookup f flags = x
+        | Just x <- Map.lookup f flags = x
         | otherwise = error $ "Unknown flag: " ++ show f
     loop (Var (Impl GHC range)) = withinRange (ghcVersion plan) range
     loop (Var (Impl _ _)) = False

@@ -7,7 +7,6 @@ import Data.IORef
 import Data.List.Split (splitOn)
 import Data.Maybe (fromMaybe)
 import Data.Monoid (Last(..))
-import Data.Semigroup (Semigroup, (<>))
 import Development.Shake hiding (command)
 import Development.Shake.FilePath ((</>), takeDirectory, splitFileName)
 import Distribution.Package
@@ -16,7 +15,7 @@ import Options.Applicative hiding (action)
 import System.Directory as Directory
 import System.Environment
 
-import qualified Data.HashMap.Strict as HM
+import qualified Data.Map.Strict as Map
 
 import Pier.Build.Components
 import Pier.Build.Config
@@ -243,7 +242,7 @@ runWithOptions _ _ (Which (pkg, target)) = do
 
 -- Post-process command-line input.  If it's empty, build all local packages.
 targetsOrEverything :: [(PackageName, Target)] -> Action [(PackageName, Target)]
-targetsOrEverything [] = map (, TargetAll) . HM.keys . localPackages
+targetsOrEverything [] = map (, TargetAll) . Map.keys . localPackages
                             <$> askConfig
 targetsOrEverything ts = return ts
 

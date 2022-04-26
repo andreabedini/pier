@@ -13,6 +13,7 @@ module Pier.Build.Components
 
 import Control.Applicative (liftA2)
 import Control.Monad (filterM, (>=>))
+import qualified Data.ByteString.Char8 as C8
 import Data.List (find)
 import Data.Maybe (fromMaybe)
 import Development.Shake
@@ -112,9 +113,9 @@ getBuiltinLib (BuiltinLibraryR p) = do
     result <- runCommandStdout
                 $ ghcPkgProg ghc
                     ["describe" , display p]
-    info <- case IP.parseInstalledPackageInfo result of
-        IP.ParseFailed err -> error (show err)
-        IP.ParseOk _ info -> return info
+    info <- case IP.parseInstalledPackageInfo (C8.pack result) of
+        Left err -> error (show err)
+        Right (_, info) -> return info
     deps <- mapM askBuiltinLibrary $ IP.depends info
     let paths f = Set.fromList . map (parseGlobalPackagePath ghc)
                         . f $ info

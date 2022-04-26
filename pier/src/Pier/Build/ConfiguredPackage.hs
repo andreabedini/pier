@@ -12,7 +12,6 @@ import Distribution.PackageDescription
 import Distribution.Text (display)
 import Distribution.Version (mkVersion)
 
-import qualified Data.HashMap.Strict as HM
 import qualified Data.Set as Set
 
 import Pier.Build.Config
@@ -43,7 +42,7 @@ getConfiguredPackage p = do
         Hackage pid flags -> do
             dir <- getPackageSourceDir pid
             Right . addHappyAlexSourceDirs <$> getConfigured conf flags dir
-        Local dir _ -> Right <$> getConfigured conf HM.empty dir
+        Local dir _ -> Right <$> getConfigured conf mempty dir
   where
     getConfigured :: Config -> Flags -> Artifact -> Action ConfiguredPackage
     getConfigured conf flags dir = do
@@ -56,7 +55,7 @@ getConfiguredPackage p = do
         return $ ConfiguredPackage desc dir' datas extras
 
 targetDepNames :: BuildInfo -> [PackageName]
-targetDepNames bi = [n | Dependency n _ <- targetBuildDepends bi]
+targetDepNames bi = [n | Dependency n _ _ <- targetBuildDepends bi]
 
 -- | In older versions of Cabal, executables could use packages that were only
 -- explicitly depended on in the library or in other executables.  Some existing
