@@ -1,9 +1,4 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.34.5.
---
--- see: https://github.com/sol/hpack
-
+cabal-version:  2.4
 name:           pier
 version:        0.3.0.0
 synopsis:       Yet another Haskell build system.
@@ -22,9 +17,8 @@ category:       Development
 homepage:       https://github.com/judah/pier#readme
 bug-reports:    https://github.com/judah/pier/issues
 maintainer:     judah.jacobson@gmail.com
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
-build-type:     Simple
 
 source-repository head
   type: git
@@ -61,23 +55,23 @@ executable pier
       TypeSynonymInstances
   ghc-options: -threaded -with-rtsopts=-I0
   build-depends:
-      Cabal                == 2.2.*
-    , aeson                >= 1.3 && <1.5
-    , base                 == 4.11.*
-    , binary               == 0.8.*
-    , binary-orphans       == 0.1.*
-    , bytestring
-    , containers           == 0.5.*
-    , directory            >= 1.3.1 && <1.4
-    , hashable             == 1.2.*
-    , optparse-applicative
-    , pier-core            == 0.3.*
-    , shake                == 0.16.*
-    , split                == 0.2.*
-    , text                 == 1.2.*
-    , transformers         == 0.5.*
-    , unordered-containers == 0.2.*
-    , yaml                 >= 0.8 && <0.11
+      Cabal                ^>= 3.2.1.0
+    , aeson                ^>= 2.0.3.0
+    , base                 ^>= 4.14.3.0
+    , binary               ^>= 0.8.8.0
+    , binary-orphans       ^>= 1.0.2
+    , bytestring           ^>= 0.10.12.0
+    , containers           ^>= 0.6.5.1
+    , directory            ^>= 1.3.6.0
+    , hashable             ^>= 1.4.0.2
+    , optparse-applicative ^>= 0.17.0.0
+    , pier-core            ^>= 0.3.0.0
+    , shake                ^>= 0.19.6
+    , split                ^>= 0.2.3.4
+    , text                 ^>= 1.2.4.1
+    , transformers         ^>= 0.5.6.2
+    , unordered-containers ^>= 0.2.19.1
+    , yaml                 ^>= 0.11.8.0
   if os(darwin)
     ghc-options: -optP-Wno-nonportable-include-path
   default-language: Haskell2010

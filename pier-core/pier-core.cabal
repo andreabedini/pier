@@ -1,9 +1,4 @@
-cabal-version: 1.12
-
--- This file has been generated from package.yaml by hpack version 0.34.5.
---
--- see: https://github.com/sol/hpack
-
+cabal-version:  2.4
 name:           pier-core
 version:        0.3.0.0
 synopsis:       A library for writing forwards-declared build systems in haskell.
@@ -24,9 +19,8 @@ category:       Development
 homepage:       https://github.com/judah/pier#readme
 bug-reports:    https://github.com/judah/pier/issues
 maintainer:     judah.jacobson@gmail.com
-license:        BSD3
+license:        BSD-3-Clause
 license-file:   LICENSE
-build-type:     Simple
 
 source-repository head
   type: git
@@ -57,20 +51,20 @@ library
       TypeFamilies
       TypeSynonymInstances
   build-depends:
-      base              == 4.11.*
-    , base64-bytestring == 1.0.*
-    , binary            == 0.8.*
-    , bytestring        == 0.10.*
-    , containers        == 0.5.*
-    , cryptohash-sha256 == 0.11.*
-    , directory         >= 1.3.1 && <1.4
-    , hashable          == 1.2.*
-    , http-client       == 0.5.*
-    , http-client-tls   == 0.3.*
-    , http-types        == 0.12.*
-    , process           == 1.6.*
-    , shake             >= 0.16.4 && <0.17
-    , temporary         == 1.3.*
-    , text              == 1.2.*
-    , unix              == 2.7.*
+      base              ^>= 4.14.3.0
+    , base64-bytestring ^>= 1.2.1.0
+    , binary            ^>= 0.8.8.0
+    , bytestring        ^>= 0.10.12.0
+    , containers        ^>= 0.6.5.1
+    , cryptohash-sha256 ^>= 0.11.102.1
+    , directory         ^>= 1.3.6.0
+    , hashable          ^>= 1.4.0.2
+    , http-client       ^>= 0.7.11
+    , http-client-tls   ^>= 0.3.6.1
+    , http-types        ^>= 0.12.3
+    , process           ^>= 1.6.13.2
+    , shake             ^>= 0.19.6
+    , temporary         ^>= 1.3
+    , text              ^>= 1.2.4.1
+    , unix              ^>= 2.7.2.2
   default-language: Haskell2010
