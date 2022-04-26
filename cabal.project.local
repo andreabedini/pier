@@ -1,0 +1,35 @@
+allow-newer: pier-core:*
+allow-newer: pier:*
+
+--allow-newer: pier-core:base
+--allow-newer: pier-core:base64-bytestring
+--allow-newer: pier-core:binary
+--allow-newer: pier-core:bytestring
+--allow-newer: pier-core:containers
+--allow-newer: pier-core:cryptohash-sha256
+--allow-newer: pier-core:directory
+--allow-newer: pier-core:hashable
+--allow-newer: pier-core:http-client
+--allow-newer: pier-core:http-client-tls
+--allow-newer: pier-core:http-types
+--allow-newer: pier-core:process
+----allow-newer: pier-core:shake
+--allow-newer: pier-core:temporary
+--allow-newer: pier-core:text
+--allow-newer: pier-core:unix
+--
+--allow-newer: pier:Cabal
+--allow-newer: pier:aeson
+--allow-newer: pier:base
+--allow-newer: pier:binary
+--allow-newer: pier:binary-orphans
+--allow-newer: pier:containers
+--allow-newer: pier:directory
+--allow-newer: pier:hashable
+--allow-newer: pier:optparse-applicative
+----allow-newer: pier:shake
+--allow-newer: pier:split
+--allow-newer: pier:text
+--allow-newer: pier:transformers
+--allow-newer: pier:unordered-containers
+--allow-newer: pier:yaml

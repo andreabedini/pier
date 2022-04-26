@@ -1,0 +1,11 @@
+with-compiler: ghc-8.10.7
+
+packages:
+    pier/
+  , pier-core/
+
+package pier
+    ghc-options: -Wall -Werror
+
+package pier-core
+    ghc-options: -Wall -Werror
